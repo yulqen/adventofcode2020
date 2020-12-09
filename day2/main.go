@@ -38,8 +38,14 @@ func validPasswordSingle(p string) bool {
 	}
 }
 
-func validPasswords(p []string) int {
-	return 0
+func validPasswords(passwords []string) int {
+	var valid int
+	for _, p := range passwords {
+		if validPasswordSingle(p) {
+			valid++
+		}
+	}
+	return valid
 }
 
 func check(e error) {
@@ -70,5 +76,5 @@ func run() int {
 }
 
 func main() {
-	run()
+	fmt.Println(run())
 }

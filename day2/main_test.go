@@ -9,7 +9,7 @@ import (
 // 1-3 b: cdefg
 // 2-9 c: ccccccccc
 
-func TestEndToEnd(t *testing.T) {
+func TestvalidPasswordSingle(t *testing.T) {
 	cases := []struct {
 		id         int
 		policyLine string
