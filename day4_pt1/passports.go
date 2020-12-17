@@ -50,7 +50,6 @@ PLOOP:
 	for _, ps := range passports {
 		m := make(map[string]string)
 		sp := strings.Split(ps, " ")
-		sp = sp[:len(sp)-1]
 
 		for _, s := range sp {
 			m[strings.Split(s, ":")[0]] = strings.Split(s, ":")[1]
