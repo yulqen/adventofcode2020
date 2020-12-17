@@ -39,59 +39,40 @@ func run(buf []byte) int {
 
 	var valid int
 
-	cleaned := strings.Split(string(buf), "\n\n")
+	cleaned := strings.Split(strings.Trim(string(buf), "\n"), "\n\n")
 
 	var passports []string
 	for _, p := range cleaned {
 		passports = append(passports, strings.ReplaceAll(p, "\n", " "))
 	}
 
-PLOOP:
+POOP:
 	for _, ps := range passports {
-		m := make(map[string]string)
-		sp := strings.Split(ps, " ")
-
-		for _, s := range sp {
-			m[strings.Split(s, ":")[0]] = strings.Split(s, ":")[1]
+		want := map[string]bool{
+			"byr": true,
+			"iyr": true,
+			"eyr": true,
+			"hgt": true,
+			"hcl": true,
+			"ecl": true,
+			"pid": true,
+			"cid": true,
 		}
-		// If there are 8 keys present - the passport is valid
-		if len(m) == 8 {
+		fields := strings.Split(ps, " ")
+
+		for _, field := range fields {
+			fmt.Printf("field: %q\n", field)
+			name := strings.SplitN(field, ":", 2)[0]
+			if _, ok := want[name]; !ok {
+				fmt.Println("missing:", name)
+				continue POOP
+			}
+			delete(want, name)
+		}
+		delete(want, "cid")
+		if len(want) == 0 {
 			valid++
 		}
-		// If there are 7, and all the keys EXCEPT cid are present, the passport
-		// is valid
-		// ELSE
-		// if there are 7 and cid is NOT present, then the passport
-		// is invalid
-		if len(m) == 7 {
-			var cflag bool
-			for k := range m {
-				switch k {
-				case "byr":
-					cflag = false
-				case "iyr":
-					cflag = false
-				case "eyr":
-					cflag = false
-				case "hgt":
-					cflag = false
-				case "hcl":
-					cflag = false
-				case "ecl":
-					cflag = false
-				case "pid":
-					cflag = false
-				}
-			}
-			if cflag == true {
-				valid++
-				continue PLOOP
-			} else {
-				continue PLOOP
-			}
-		}
-		// all other cases are not valid
-		continue PLOOP
 	}
 	return valid
 }
