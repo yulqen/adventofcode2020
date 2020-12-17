@@ -61,7 +61,6 @@ POOP:
 		fields := strings.Split(ps, " ")
 
 		for _, field := range fields {
-			fmt.Printf("field: %q\n", field)
 			name := strings.SplitN(field, ":", 2)[0]
 			if _, ok := want[name]; !ok {
 				fmt.Println("missing:", name)
