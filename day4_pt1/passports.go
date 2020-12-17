@@ -35,13 +35,9 @@ import (
 // 4. Split that on spaces to slice
 // 5. Loop through each and test for presence of each required key, and count
 
-func main() {
-	buf, err := ioutil.ReadFile("input")
-	if err != nil {
-		log.Fatal(err)
-	}
+func run(buf []byte) int {
 
-	var invalid int
+	var valid int
 
 	cleaned := strings.Split(string(buf), "\n\n")
 
@@ -50,22 +46,35 @@ func main() {
 		passports = append(passports, strings.ReplaceAll(p, "\n", " "))
 	}
 
-	total := len(passports)
-	fmt.Println(total)
-
+PLOOP:
 	for _, ps := range passports {
+		m := make(map[string]string)
 		sp := strings.Split(ps, " ")
-		if len(sp) != 8 {
-			invalid++
-		}
+		sp = sp[:len(sp)-1]
 
-	KVLOOP:
-		for _, kv := range sp {
-			k := strings.Split(kv, ":")
-			switch k[0] {
-			case "byr":
-				continue KVLOOP
+		for _, s := range sp {
+			m[strings.Split(s, ":")[0]] = strings.Split(s, ":")[1]
+		}
+		if len(m) != 8 {
+			for k := range m {
+				if k == "cid" {
+					valid++
+					continue PLOOP
+				}
 			}
+			continue PLOOP
+		} else {
+			valid++
 		}
 	}
+	return valid
+}
+
+func main() {
+	buf, err := ioutil.ReadFile("input")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(run(buf))
 }
