@@ -55,17 +55,44 @@ PLOOP:
 		for _, s := range sp {
 			m[strings.Split(s, ":")[0]] = strings.Split(s, ":")[1]
 		}
-		if len(m) != 8 {
-			for k := range m {
-				if k == "cid" {
-					valid++
-					continue PLOOP
-				}
-			}
-			continue PLOOP
-		} else {
+		// If there are 8 keys present - the passport is valid
+		if len(m) == 8 {
 			valid++
 		}
+		// If there are 7, and all the keys EXCEPT cid are present, the passport
+		// is valid
+		// ELSE
+		// if there are 7 and cid is NOT present, then the passport
+		// is invalid
+		if len(m) == 7 {
+			var cflag bool
+			for k := range m {
+				switch k {
+				case "byr":
+					cflag = false
+				case "iyr":
+					cflag = false
+				case "eyr":
+					cflag = false
+				case "hgt":
+					cflag = false
+				case "hcl":
+					cflag = false
+				case "ecl":
+					cflag = false
+				case "pid":
+					cflag = false
+				}
+			}
+			if cflag == true {
+				valid++
+				continue PLOOP
+			} else {
+				continue PLOOP
+			}
+		}
+		// all other cases are not valid
+		continue PLOOP
 	}
 	return valid
 }

@@ -13,7 +13,7 @@ func TestBasic(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	if run(buf) != 3 {
+	if run(buf) != 2 {
 		t.Errorf("Test failed. Expected 2, got %d", run(buf))
 	}
 
