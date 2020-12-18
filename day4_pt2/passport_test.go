@@ -129,5 +129,23 @@ func TestEyeColourFilter(t *testing.T) {
 				c.id, c.result, checkEyeColour(c.key))
 		}
 	}
+}
 
+func TestPassportIdFilter(t *testing.T) {
+	cases := []struct {
+		id     int
+		pid    string
+		result bool
+	}{
+		{1, "000000001", true},
+		{2, "0123456789", false},
+		{3, "123456789", true},
+		{4, "123456", false},
+	}
+	for _, c := range cases {
+		if checkPassportId(c.pid) != c.result {
+			t.Errorf("The test %d failed; expected %t but got %t",
+				c.id, c.result, checkPassportId(c.pid))
+		}
+	}
 }

@@ -37,7 +37,7 @@ var intRules = map[string][]int{
 var regexRules = map[string]*regexp.Regexp{
 	"hcl": regexp.MustCompile(`#[0-9a-f]{6}`),
 	"ecl": regexp.MustCompile(`amb|blu|brn|gry|grn|hzl|oth`),
-	"pid": regexp.MustCompile(`\d{9}`),
+	"pid": regexp.MustCompile(`^\d{9}$`),
 }
 
 func checkHairColour(hex string) bool {
@@ -49,6 +49,13 @@ func checkHairColour(hex string) bool {
 
 func checkEyeColour(key string) bool {
 	if regexRules["ecl"].MatchString(key) == true {
+		return true
+	}
+	return false
+}
+
+func checkPassportId(pid string) bool {
+	if regexRules["pid"].MatchString(pid) == true {
 		return true
 	}
 	return false
