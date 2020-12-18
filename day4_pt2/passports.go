@@ -131,6 +131,31 @@ POOP:
 
 		for _, field := range fields {
 			name := strings.SplitN(field, ":", 2)[0]
+			if name == "byr" || name == "iyr" || name == "eyr" {
+				if checkYearRange(name, strings.SplitN(field, ":", 2)[1]) != true {
+					continue POOP
+				}
+			}
+			if name == "hgt" {
+				if checkHeight(strings.SplitN(field, ":", 2)[1]) != true {
+					continue POOP
+				}
+			}
+			if name == "hcl" {
+				if checkHairColour(strings.SplitN(field, ":", 2)[1]) != true {
+					continue POOP
+				}
+			}
+			if name == "ecl" {
+				if checkEyeColour(strings.SplitN(field, ":", 2)[1]) != true {
+					continue POOP
+				}
+			}
+			if name == "pid" {
+				if checkPassportId(strings.SplitN(field, ":", 2)[1]) != true {
+					continue POOP
+				}
+			}
 			if _, ok := want[name]; !ok {
 				fmt.Println("missing:", name)
 				continue POOP
@@ -139,7 +164,6 @@ POOP:
 		}
 		delete(want, "cid")
 		if len(want) == 0 {
-
 			valid++
 		}
 	}

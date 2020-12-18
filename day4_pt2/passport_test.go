@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"io/ioutil"
+	"log"
+	"testing"
+)
 
 func TestBirthYearFilter(t *testing.T) {
 	cases := []struct {
@@ -147,5 +151,15 @@ func TestPassportIdFilter(t *testing.T) {
 			t.Errorf("The test %d failed; expected %t but got %t",
 				c.id, c.result, checkPassportId(c.pid))
 		}
+	}
+}
+
+func TestEndToEnd(t *testing.T) {
+	buf, err := ioutil.ReadFile("test_input")
+	if err != nil {
+		log.Fatal(err)
+	}
+	if run(buf) != 4 {
+		t.Errorf("Expected 4 but got %d", run(buf))
 	}
 }
