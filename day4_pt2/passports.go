@@ -27,25 +27,70 @@ import (
 // present and valid according to the above rules. Here are some example values:
 
 var intRules = map[string][]int{
-	"byr": []int{1920, 2002},
-	"iyr": []int{2010, 2020},
-	"eyr": []int{2020, 2030},
-	"hgt": []int{150, 193},
+	"byr":   []int{1920, 2002},
+	"iyr":   []int{2010, 2020},
+	"eyr":   []int{2020, 2030},
+	"hgtcm": []int{150, 193},
+	"hgtin": []int{59, 76},
 }
 
 var regexRules = map[string]*regexp.Regexp{
-	"hgt": regexp.MustCompile(`(\d{4}cm|\d{4}in)`),
 	"hcl": regexp.MustCompile(`#[0-9a-f]{6}`),
-	"ecl": regexp.MustCompile(`amb|blu|bru|gry|grn|hzl|oth`),
+	"ecl": regexp.MustCompile(`amb|blu|brn|gry|grn|hzl|oth`),
 	"pid": regexp.MustCompile(`\d{9}`),
 }
 
-func checkBirthYear(year string) bool {
+func checkHairColour(hex string) bool {
+	if regexRules["hcl"].MatchString(hex) == true {
+		return true
+	}
+	return false
+}
+
+func checkEyeColour(key string) bool {
+	if regexRules["ecl"].MatchString(key) == true {
+		return true
+	}
+	return false
+}
+
+// checkHeight passes height strings (with cm or in)
+func checkHeight(height string) bool {
+	cmRegex := regexp.MustCompile(`(\d+)cm$`)
+	inRegex := regexp.MustCompile(`(\d+)in$`)
+	cmMatch := cmRegex.FindStringSubmatch(height)
+	inMatch := inRegex.FindStringSubmatch(height)
+
+	if len(cmMatch) > 0 {
+		// do cm stuff
+		cm, err := strconv.Atoi(cmMatch[1])
+		if err != nil {
+			log.Fatal(err)
+		}
+		if cm < intRules["hgtcm"][0] || cm > intRules["hgtcm"][1] {
+			return false
+		}
+	}
+
+	if len(inMatch) > 0 {
+		// do in stuff
+		in, err := strconv.Atoi(inMatch[1])
+		if err != nil {
+			log.Fatal(err)
+		}
+		if in < intRules["hgtin"][0] || in > intRules["hgtin"][1] {
+			return false
+		}
+	}
+	return true
+}
+
+func checkYearRange(key string, year string) bool {
 	yearInt, err := strconv.Atoi(year)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if yearInt < intRules["byr"][0] || yearInt > intRules["byr"][1] {
+	if yearInt < intRules[key][0] || yearInt > intRules[key][1] {
 		return false
 	}
 	return true
