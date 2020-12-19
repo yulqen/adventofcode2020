@@ -54,7 +54,7 @@ func checkEyeColour(key string) bool {
 	return false
 }
 
-func checkPassportId(pid string) bool {
+func checkPassportID(pid string) bool {
 	if regexRules["pid"].MatchString(pid) == true {
 		return true
 	}
@@ -121,7 +121,7 @@ POOP:
 			"iyr": true, // iyr (Issue Year) - four digits; at least 2010 and at most 2020.
 			"eyr": true, // eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
 			"hgt": true, // hgt (Height) - a number followed by either cm or in: If cm, the number must be at least 150 and at most 193. If in, the number must be at least 59 and at most 76.
-			"hcl": true, // hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
+			"hcl": true, // hcl (Hair Color) - a # followed by exactly six characters 1-9 or a-f.
 			"ecl": true, // ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
 			"pid": true, // pid (Passport ID) - a nine-digit number, including leading zeroes.
 			"cid": true, // cid (Country ID) - ignored, missing or not.
@@ -131,39 +131,40 @@ POOP:
 
 		for _, field := range fields {
 			name := strings.SplitN(field, ":", 2)[0]
-			if name == "byr" || name == "iyr" || name == "eyr" {
-				if checkYearRange(name, strings.SplitN(field, ":", 2)[1]) != true {
-					continue POOP
-				}
-			}
-			if name == "hgt" {
-				if checkHeight(strings.SplitN(field, ":", 2)[1]) != true {
-					continue POOP
-				}
-			}
-			if name == "hcl" {
-				if checkHairColour(strings.SplitN(field, ":", 2)[1]) != true {
-					continue POOP
-				}
-			}
-			if name == "ecl" {
-				if checkEyeColour(strings.SplitN(field, ":", 2)[1]) != true {
-					continue POOP
-				}
-			}
-			if name == "pid" {
-				if checkPassportId(strings.SplitN(field, ":", 2)[1]) != true {
-					continue POOP
-				}
-			}
 			if _, ok := want[name]; !ok {
 				fmt.Println("missing:", name)
 				continue POOP
+			} else if name == "byr" || name == "iyr" || name == "eyr" {
+				if checkYearRange(name, strings.SplitN(field, ":", 2)[1]) != true {
+					log.Printf("Rejecting name %v for %v", field, ps)
+					continue POOP
+				}
+			} else if name == "hgt" {
+				if checkHeight(strings.SplitN(field, ":", 2)[1]) != true {
+					log.Printf("Rejecting name %v for %v", field, ps)
+					continue POOP
+				}
+			} else if name == "hcl" {
+				if checkHairColour(strings.SplitN(field, ":", 2)[1]) != true {
+					log.Printf("Rejecting name %v for %v", field, ps)
+					continue POOP
+				}
+			} else if name == "ecl" {
+				if checkEyeColour(strings.SplitN(field, ":", 2)[1]) != true {
+					log.Printf("Rejecting name %v for %v", field, ps)
+					continue POOP
+				}
+			} else if name == "pid" {
+				if checkPassportID(strings.SplitN(field, ":", 2)[1]) != true {
+					log.Printf("Rejecting name %v for %v", field, ps)
+					continue POOP
+				}
 			}
 			delete(want, name)
 		}
 		delete(want, "cid")
 		if len(want) == 0 {
+			log.Printf("Passport correct: %v - number: %d", ps, valid)
 			valid++
 		}
 	}

@@ -147,9 +147,9 @@ func TestPassportIdFilter(t *testing.T) {
 		{4, "123456", false},
 	}
 	for _, c := range cases {
-		if checkPassportId(c.pid) != c.result {
+		if checkPassportID(c.pid) != c.result {
 			t.Errorf("The test %d failed; expected %t but got %t",
-				c.id, c.result, checkPassportId(c.pid))
+				c.id, c.result, checkPassportID(c.pid))
 		}
 	}
 }
